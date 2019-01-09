@@ -2,7 +2,7 @@
 ##' @importFrom methods is
 ##' @importFrom stats coef dist glm loess median model.frame model.matrix model.offset
 ##' model.response optimize pnorm predict printCoefmat qchisq qnorm rnorm runif sd splinefun
-##' @title SDALGCPSSIPoint function 
+##' @title SDALGCPSSIPoint function
 ##' @description This function generate a random point pattern using Simple Sequential Inhibition (SSI) process. An internal function for \code{\link{SDALGCP}} package.
 ##' @param poly polygon in which to generate the points.
 ##' @param delta distance between points.
@@ -15,7 +15,7 @@
 ##' @param giveup Number of rejected proposals after which the algorithm should terminate.
 ##' @details This algorithm generates points inside the polygon using Simple Sequential Inhibition (SSI) process.
 ##' @return It returns a list of the coordinates of the points created in each polygon.
-##' @examples 
+##' @examples
 ##' data(PBCshp)
 ##' points <- SDALGCPSSIPoint(poly=PBCshp@polygons[[1]]@Polygons[[1]]@coords, delta=100)
 ##' @importFrom raster extract aggregate
@@ -28,16 +28,16 @@
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @keywords internal
 ##' @export
-##' 
-SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax=NULL, pop=NULL, 
+##'
+SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax=NULL, pop=NULL,
                             n= NULL, rho=NULL, giveup=NULL){
   if (weighted==TRUE){
     if (is.null(rho)) rho <- 0.55
     if (is.null(giveup))  giveup <- 1000
     if (is.null(n)) n <- round((rho*splancs::areapl(poly)*4)/ (pi*delta^2))
-    if (is.null(pop)) stop("please supply the population total for the region(s) 
+    if (is.null(pop)) stop("please supply the population total for the region(s)
                            or if you don't have the population density map just set pop_shp=NULL")
-    if (is.null(lambdamax))  stop("please supply the max population for the region(s) 
+    if (is.null(lambdamax))  stop("please supply the max population for the region(s)
                                   or if you don't have the population density map just set pop_shp=NULL")
     out.wei <- c()
     fg <- 0
@@ -50,13 +50,13 @@ SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax
       if ( fg > 20) {
         wei <- 1/n
         prob2 <- vfv/max(as.numeric(pop_shp@data@values), na.rm = TRUE)
-      } 
+      }
       if (!is.na(prob2) & prob2 < runif(1)) break
     }
     out.wei <- c(out.wei, wei)
     delsq <- delta*delta
-    if ((n * pi * delsq/4 > splancs::areapl(poly))) 
-      warning(paste("Window is too small to fit", n, "points", 
+    if ((n * pi * delsq/4 > splancs::areapl(poly)))
+      warning(paste("Window is too small to fit", n, "points",
                     "at minimum distance", delta))
     len.xy <- 0
     while (len.xy<n) {
@@ -87,8 +87,8 @@ SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax
         if (k > 20){
           wei <- 1/n
           prob <- vdv/max(as.numeric(pop_shp@data@values), na.rm = TRUE)
-        } 
-        
+        }
+
         #########termination criteria
         if (k >= giveup) {
           len.xy <- n
@@ -111,8 +111,8 @@ SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax
     if (is.null(n)) n <- round((rho*splancs::areapl(poly)*4)/ (pi*delta^2))
     xy <- matrix(splancs::csr(poly,1),1,2)
     delsq <- delta*delta
-    if ((n * pi * delsq/4 > splancs::areapl(poly))) 
-      warning(paste("Window is too small to fit", n, "points", 
+    if ((n * pi * delsq/4 > splancs::areapl(poly)))
+      warning(paste("Window is too small to fit", n, "points",
                     "at minimum distance", delta))
     len.xy <- 0
     while (len.xy<n) {
@@ -154,7 +154,7 @@ SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax
 ##' @param bound Spatial object; the boundary of the polygon
 ##' @details This algorithm generates points inside the polygon using a uniform sampling or completely spatial random sampling.
 ##' @return It returns a list of the coordinates of the points created in each polygon.
-##' @examples 
+##' @examples
 ##' data(PBCshp)
 ##' require(sp)  #load sp package
 ##' poly <- PBCshp@polygons[[1]]@Polygons[[1]]@coords
@@ -171,16 +171,16 @@ SDALGCPSSIPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @keywords internal
 ##' @export
-##' 
-SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax=NULL, pop=NULL, 
+##'
+SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax=NULL, pop=NULL,
                                 n= NULL, rho=NULL, giveup=NULL, bound=NULL){
   if (weighted==TRUE){
     if (is.null(rho)) rho <- 0.55
     if (is.null(giveup))  giveup <- 1000
     if (is.null(n)) n <- round((rho*splancs::areapl(poly)*4)/ (pi*delta^2))
-    if (is.null(pop)) stop("please supply the population total for the region(s) 
+    if (is.null(pop)) stop("please supply the population total for the region(s)
                            or if you don't have the population density map just set pop_shp=NULL")
-    if (is.null(lambdamax))  stop("please supply the max population for the region(s) 
+    if (is.null(lambdamax))  stop("please supply the max population for the region(s)
                                   or if you don't have the population density map just set pop_shp=NULL")
     out.wei <- c()
     fg <- 0
@@ -193,13 +193,13 @@ SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
       if ( fg > 20) {
         wei <- 1/n
         prob2 <- vfv/max(as.numeric(pop_shp@data@values), na.rm = TRUE)
-      } 
+      }
       if (!is.na(prob2) & prob2 < runif(1)) break
     }
     out.wei <- c(out.wei, wei)
     delsq <- delta*delta
-    if ((n * pi * delsq/4 > splancs::areapl(poly))) 
-      warning(paste("Window is too small to fit", n, "points", 
+    if ((n * pi * delsq/4 > splancs::areapl(poly)))
+      warning(paste("Window is too small to fit", n, "points",
                     "at minimum distance", delta))
     len.xy <- 0
     while (len.xy<n) {
@@ -219,7 +219,7 @@ SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
         if (k > 20){
           wei <- 1/n
           prob <- vdv/max(as.numeric(pop_shp@data@values), na.rm = TRUE)
-        } 
+        }
         #########termination criteria
         if (k >= giveup) {
           len.xy <- n
@@ -242,8 +242,8 @@ SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
     if (is.null(n)) n <- round((rho*splancs::areapl(poly)*4)/ (pi*delta^2))
     xy<-matrix(splancs::csr(poly,1),1,2)
     delsq <- delta*delta
-    if ((n * pi * delsq/4 > splancs::areapl(poly))) 
-      warning(paste("Window is too small to fit", n, "points", 
+    if ((n * pi * delsq/4 > splancs::areapl(poly)))
+      warning(paste("Window is too small to fit", n, "points",
                     "at minimum distance", delta))
     xy <- sp::spsample(bound, cellsize=delta, n = n, type = "random")@coords
     rownames(xy) <- 1:nrow(xy)
@@ -267,7 +267,7 @@ SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
 ##' @param bound Spatial object; the boundary of the polygon
 ##' @details This algorithm generates points inside the polygon using a regular (systematically aligned) sampling.
 ##' @return It returns a list of the coordinates of the points created in each polygon.
-##' @examples 
+##' @examples
 ##' data(PBCshp)
 ##' require(sp)   #load sp package
 ##' poly <- PBCshp@polygons[[1]]@Polygons[[1]]@coords
@@ -284,7 +284,7 @@ SDALGCPUniformPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @keywords internal
 ##' @export
-##' 
+##'
 SDALGCPRegularPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambdamax=NULL, pop=NULL, n= NULL, rho=NULL, giveup=NULL,
                    bound=NULL){
   if (weighted==TRUE){
@@ -295,8 +295,8 @@ SDALGCPRegularPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
     if (is.null(n)) n <- round((rho*splancs::areapl(poly)*4)/ (pi*delta^2))
     xy<-matrix(splancs::csr(poly,1),1,2)
     delsq <- delta*delta
-    if ((n * pi * delsq/4 > splancs::areapl(poly))) 
-      warning(paste("Window is too small to fit", n, "points", 
+    if ((n * pi * delsq/4 > splancs::areapl(poly)))
+      warning(paste("Window is too small to fit", n, "points",
                     "at minimum distance", delta))
     xy <- sp::spsample(bound, cellsize=delta,  type = "regular")@coords
     rownames(xy) <- 1:nrow(xy)
@@ -318,7 +318,7 @@ SDALGCPRegularPoint <- function(poly, delta, weighted=FALSE, pop_shp=NULL, lambd
 ##' @param plot To display the plot of the points inside the polygon, default to TRUE.
 ##' @param rho Optional, The packing density, default set to 0.55
 ##' @param giveup Number of rejected proposals after which the algorithm should terminate.
-##' @details This algorithm generates points inside the polygon using three algorithms specified in the method. 
+##' @details This algorithm generates points inside the polygon using three algorithms specified in the method.
 ##' @return It returns a list of the coordinates of the points created in each polygon and it has an associated attribute weighted which is either TRUE or FALSE to indicate if the population density is used or not.
 ##' @seealso \link{SDALGCPSSIPoint}, \link{SDALGCPUniformPoint}, \link{SDALGCPRegularPoint}
 ##' @importFrom raster extract aggregate
@@ -349,7 +349,7 @@ SDALGCPCreatePoint <- function(my_shp, delta, weighted=FALSE, lambdamax=NULL, po
   }
   ###############################################
   if (class(my_shp)[1]=="Polygon"){
-    bound <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(cbind(xrange=my_shp@coords[,1], 
+    bound <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(cbind(xrange=my_shp@coords[,1],
                                                                           yrange=my_shp@coords[,2]))), ID = "a")))
     poly <- bound@polygons[[1]]@Polygons[[1]]@coords
     #r.shp <- bbox(my_shp)
@@ -363,7 +363,7 @@ SDALGCPCreatePoint <- function(my_shp, delta, weighted=FALSE, lambdamax=NULL, po
   if (SSI==TRUE){
     xycand <- SDALGCPSSIPoint(poly=poly, delta=delta, pop_shp=pop_shp, lambdamax=lambdamax, pop=pop,
                       n = n, rho=rho, giveup=giveup, weighted=weighted)
-    
+
   } else if (uniform==TRUE){
     xycand <- SDALGCPUniformPoint(poly=poly, delta=delta, pop_shp=pop_shp, lambdamax=lambdamax, pop=pop,
                       n = n, rho=rho, giveup=giveup, weighted=weighted, bound=bound)
@@ -371,7 +371,7 @@ SDALGCPCreatePoint <- function(my_shp, delta, weighted=FALSE, lambdamax=NULL, po
     xycand <- SDALGCPRegularPoint(poly=poly, delta=delta, pop_shp=pop_shp, lambdamax=lambdamax, pop=pop,
                      n = n, rho=rho, giveup=giveup, weighted=weighted, bound=bound)
   }
-  
+
   if (plot==TRUE) {
     if (class(my_shp)[1]=="Polygon"){
       sampled_locations <- spatstat::ppp(x = xycand$xy[,1], y = xycand$xy[,2], window = maptools::as.owin.SpatialPolygons(bound))
@@ -396,7 +396,7 @@ SDALGCPCreatePoint <- function(my_shp, delta, weighted=FALSE, lambdamax=NULL, po
 ##' @param plot To display the plot of the points inside the polygon, default to TRUE
 ##' @param method To specify which method to use to sample the points, the options are 1 for Simple Sequential Inhibition (SSI) process, 2 for Uniform sampling and 3 for regular grid. 1 is the default
 ##' @param giveup Number of rejected proposals after which the algorithm should terminate.
-##' @details This algorithm generates points inside the polygon using three algorithms specified in the method. 
+##' @details This algorithm generates points inside the polygon using three algorithms specified in the method.
 ##' @return It returns a list of the coordinates of the points created in each polygon and it has an associated attribute weighted which is either TRUE or FALSE to indicate if the population density is used or not.
 ##' @seealso \link{SDALGCPCreatePoint}, \link{SDALGCPSSIPoint}, \link{SDALGCPUniformPoint}, \link{SDALGCPRegularPoint}
 ##' @importFrom raster extract aggregate
@@ -418,7 +418,7 @@ SDALGCPpolygonpoints <- function(my_shp, delta, method=1, pop_shp=NULL,  weighte
     my_list <- list()
     pb$tick(0)
     for (i in 1:length(my_shp)){
-      my_list[[i]] <- SDALGCPCreatePoint(my_shp = my_shp@polygons[[i]]@Polygons[[1]], 
+      my_list[[i]] <- SDALGCPCreatePoint(my_shp = my_shp@polygons[[i]]@Polygons[[1]],
                                     pop_shp = pop_shp, delta=delta, method=method,
                                     plot=plot, lambdamax=NULL, pop=NULL, rho=rho, weighted=weighted,
                                     giveup=giveup)
@@ -445,7 +445,7 @@ SDALGCPpolygonpoints <- function(my_shp, delta, method=1, pop_shp=NULL,  weighte
     my_list <- list()
     pb$tick(0)
     for (i in 1:length(my_shp)){
-      my_list[[i]] <- SDALGCPCreatePoint(my_shp = my_shp@polygons[[i]]@Polygons[[1]], 
+      my_list[[i]] <- SDALGCPCreatePoint(my_shp = my_shp@polygons[[i]]@Polygons[[1]],
                                     pop_shp = pop_shp, delta=delta, method=method, rho=rho,
                                     plot=plot, lambdamax=my_pop_lsoa_max[i], pop=my_pop_lsoa[i],
                                     weighted=weighted, giveup=giveup)
@@ -460,7 +460,7 @@ SDALGCPpolygonpoints <- function(my_shp, delta, method=1, pop_shp=NULL,  weighte
 
 ###############################################################
 ##' @title precomputeCorrMatrix function
-##' @description This function precomputes the covariance matrix 
+##' @description This function precomputes the covariance matrix
 ##' @param S.coord The list of the coordinates of the points created in each polygon
 ##' @param phi The vector of the scale parameter
 ##' @details This function precompute the covariance matrix using the exponential covariance function
@@ -470,14 +470,14 @@ SDALGCPpolygonpoints <- function(my_shp, delta, method=1, pop_shp=NULL,  weighte
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @importFrom pdist pdist
 ##' @importFrom utils setTxtProgressBar txtProgressBar
-##' @seealso \code{\link{SDALGCPpolygonpoints}}, 
+##' @seealso \code{\link{SDALGCPpolygonpoints}},
 ##' @keywords internal
 precomputeCorrMatrix <- function(S.coord, phi){
   weight=attr(S.coord, 'weighted')
   n.distr <- length(S.coord)
   n.phi <- length(phi)
   cat("\n Start precomputing the correlation matrix! \n")
-  #pb = utils::txtProgressBar(min = 0, max = n.distr, initial = 0) 
+  #pb = utils::txtProgressBar(min = 0, max = n.distr, initial = 0)
   pb <- progress::progress_bar$new(
     format = "   [:bar:] :percent", total = n.distr, width = 70, clear=FALSE)
   R= array(NA, dim = c(n.distr, n.distr, n.phi))
@@ -497,7 +497,7 @@ precomputeCorrMatrix <- function(S.coord, phi){
     }
     attr(R, 'weighted') <- TRUE
     attr(R, 'my_shp') <-   attr(S.coord, 'my_shp')
-    attr(R, 'S_coord') <-   S.coord   
+    attr(R, 'S_coord') <-   S.coord
   }else{
     pb$tick(0)
     for (i in 1:n.distr){
@@ -513,7 +513,7 @@ precomputeCorrMatrix <- function(S.coord, phi){
     }
     attr(R, 'weighted') <- FALSE
     attr(R, 'my_shp') <-   attr(S.coord, 'my_shp')
-    attr(R, 'S_coord') <-   S.coord   
+    attr(R, 'S_coord') <-   S.coord
   }
   cat("\n Done precomputing the correlation matrix!\n")
   return(list(R=R, phi=phi))
@@ -531,7 +531,7 @@ precomputeCorrMatrix <- function(S.coord, phi){
 ##' @param S.sim the posterior sample of the linear predictor given the initial parameters
 ##' @param Denominator the value of the denominator of the likelihood
 ##' @param messages logical; if message=TRUE, it prints the results objective function and the parameters at every phi iteration. Default is FALSE.
-##' @details The function helps to obtain the MCML estimate for a given value of correlation matrix, i.e for a given value of the scale parameter phi. 
+##' @details The function helps to obtain the MCML estimate for a given value of correlation matrix, i.e for a given value of the scale parameter phi.
 ##' @return \code{estimate}: estimates of the model parameters; beta's and with sigma2 on the log scale
 ##' @return \code{covariance}: covariance matrix of the MCML estimates.
 ##' @return \code{log.lik}: maximum value of the log-likelihood.
@@ -541,7 +541,7 @@ precomputeCorrMatrix <- function(S.coord, phi){
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @references Giorgi, E., & Diggle, P. J. (2017). PrevMap: an R package for prevalence mapping. Journal of Statistical Software, 78(8), 1-29. doi:10.18637/jss.v078.i08.
 ##' @references Christensen, O. F. (2004). Monte Carlo maximum likelihood in model-based geostatistics. Journal of Computational and Graphical Statistics 13, 702-718.
-##' @importFrom stats nlminb 
+##' @importFrom stats nlminb
 ##' @importFrom PrevMap Laplace.sampling
 ##' @keywords internal
 ##' @seealso \code{\link{controlmcmcSDA}}
@@ -550,11 +550,11 @@ Aggregated_poisson_log_MCML <- function(y, D, m, corr, par0, control.mcmc, S.sim
                                         Denominator, messages) {
   n <- length(y)
   p <- ncol(D)
-  
-  
+
+
   R.inv <- solve(corr)
   ldetR <- determinant(corr)$modulus
-  
+
   #likelihood
   Log.Joint.dens.S.Y <- function(S,val) {
     llik <- sum(y*S-m*exp(S))
@@ -563,46 +563,46 @@ Aggregated_poisson_log_MCML <- function(y, D, m, corr, par0, control.mcmc, S.sim
     return(-0.5*(n*log(val$sigma2)+ ldetR+
                    AAA/val$sigma2)+ llik)
   }
-  
-  
+
+
   #it computes the density of S for each sample of S
   Num.Monte.Carlo.Log.Lik <- function(par) {
     beta <- par[1:p]
     val <- list()
     val$mu <- as.numeric(D%*%beta)
     val$sigma2 <- exp(par[p+1])
-    
+
     return(sapply(1:(dim(S.sim)[1]),function(i) Log.Joint.dens.S.Y(S.sim[i,],val)))
   }
-  
+
   Monte.Carlo.Log.Lik <- function(par) {
-    log(mean(exp(Num.Monte.Carlo.Log.Lik(par)-Denominator)))  
+    log(mean(exp(Num.Monte.Carlo.Log.Lik(par)-Denominator)))
   }
-  
-  
+
+
   grad.Monte.Carlo.Log.Lik <- function(par){
     beta <- par[1:p]
     D.beta <- D%*%beta
     sigma2 <- exp(par[p+1])
-    
+
     First.deriv.S.param <- function(S){
-      
+
       diff.S <- S-D.beta
       AAA <- t(diff.S)%*%R.inv%*%diff.S
       grad.beta <-  t(D)%*%R.inv%*%(diff.S)/sigma2
-      
+
       grad.log.sigma2 <- (-n/(2*sigma2)+0.5*AAA/(sigma2^2))*sigma2
-      
+
       der.par <- c(grad.beta, grad.log.sigma2)
       return(der.par)
     }
-    
-    
+
+
     ratio <- exp(Num.Monte.Carlo.Log.Lik(par)-Denominator)
     sum.ratio <- sum(ratio)
-    part.deriv <- ratio/sum.ratio            
-    
-    
+    part.deriv <- ratio/sum.ratio
+
+
     cumm <- rep(0,length(par))
     for(i in 1:(dim(S.sim)[1])) {
       full.deriv <- part.deriv[i]*First.deriv.S.param(S.sim[i,])
@@ -610,49 +610,49 @@ Aggregated_poisson_log_MCML <- function(y, D, m, corr, par0, control.mcmc, S.sim
     }
     return(cumm)
   }
-  
-  
-  
+
+
+
   #The second derivative of the Monte Carlo approximation
   hess.Monte.Carlo.Log.Lik <- function(par) {
     beta <- par[1:p]
     mu <- D%*%beta
     sigma2 <- exp(par[p+1])
-    
+
     H <- matrix(0,nrow=length(par),ncol=length(par))
     H[1:p,1:p] <- (-t(D)%*%R.inv%*%D)/sigma2
-    
+
     Second.deriv.S.param <- function(S, part.deriv) {
-      
+
       diff.S <- S-mu
       q.f <- t(diff.S)%*%R.inv%*%diff.S
-      
+
       grad.beta <-  t(D)%*%R.inv%*%(diff.S)/sigma2
-      
+
       grad.log.sigma2 <- (-n/(2*sigma2)+0.5*q.f/(sigma2^2))*sigma2
-      
+
       der.par <- c(grad.beta, grad.log.sigma2)
-      
-      
+
+
       H[1:p,p+1] <- H[p+1,1:p] <- -t(D)%*%R.inv%*%(diff.S)/sigma2
-      
-      
+
+
       H[p+1,p+1] <- (n/(2*sigma2^2)-q.f/(sigma2^3))*sigma2^2+
         grad.log.sigma2
-      
+
       out <- list()
       out$first.term<- part.deriv*(der.par%*%t(der.par)+H)
       out$grad <- der.par*part.deriv
       out
     }
-    
-    
-    
+
+
+
     ratio <- exp(Num.Monte.Carlo.Log.Lik(par)-Denominator)
     sum.ratio <- sum(ratio)
     part.deriv <- ratio/sum.ratio
-    
-    
+
+
     last.term <- rep(0,length(par))
     cumm <- matrix(0,length(par),length(par))
     for(i in 1:(dim(S.sim)[1])) {
@@ -662,12 +662,12 @@ Aggregated_poisson_log_MCML <- function(y, D, m, corr, par0, control.mcmc, S.sim
     }
     return(cumm-last.term%*%t(last.term))
   }
-  
+
   new.par <- par0[-length(par0)]
   new.par[(p+1)] <- log(new.par[(p+1)])
-  
+
   output <- list()
-  
+
   result <- stats::nlminb(new.par,function(x) -Monte.Carlo.Log.Lik(x),
                           function(x) -grad.Monte.Carlo.Log.Lik(x),
                           function(x) -hess.Monte.Carlo.Log.Lik(x),control=list(trace=1*messages))
@@ -694,9 +694,9 @@ Aggregated_poisson_log_MCML <- function(y, D, m, corr, par0, control.mcmc, S.sim
 ##' @param messages logical; if message=TRUE, it prints the results objective function and the parameters at every phi iteration. Default is FALSE.
 ##' @details This function performs parameter estimation for a SDALGCP Model
 ##' \bold{Monte Carlo Maximum likelihood.}
-##' The Monte Carlo maximum likelihood method uses conditional simulation from the distribution of the random effect \eqn{T(x) = d(x)'\beta+S(x)} given the data \code{y}, in order to approximate the high-dimensional intractable integral given by the likelihood function. The resulting approximation of the likelihood is then maximized by a numerical optimization algorithm which uses analytic expression for computation of the gradient vector and Hessian matrix. The functions used for numerical optimization are \code{\link{nlminb}} 
-##' @return An object of class "PrevMap".
-##' The function \code{\link{summary.PrevMap}} is used to print a summary of the fitted model.
+##' The Monte Carlo maximum likelihood method uses conditional simulation from the distribution of the random effect \eqn{T(x) = d(x)'\beta+S(x)} given the data \code{y}, in order to approximate the high-dimensional intractable integral given by the likelihood function. The resulting approximation of the likelihood is then maximized by a numerical optimization algorithm which uses analytic expression for computation of the gradient vector and Hessian matrix. The functions used for numerical optimization are \code{\link{nlminb}}
+##' @return An object of class "SDALGCP".
+##' The function \code{\link{summary.SDALGCP}} is used to print a summary of the fitted model.
 ##' The object is a list with the following components:
 ##' @return \code{D}: matrix of covariates.
 ##' @return \code{y}: the count, response observations.
@@ -736,7 +736,7 @@ SDALGCPParaEst <- function(formula, data, corr, par0=NULL, control.mcmc=NULL, pl
     m <- rep(1, n)
   }
   if(is.null(par0)) {
-    phi <- as.numeric(corr$phi)                
+    phi <- as.numeric(corr$phi)
     n.phi <- length(phi)
     R <- corr$R
     model <- glm(formula, family="poisson", data=data)
@@ -764,7 +764,7 @@ SDALGCPParaEst <- function(formula, data, corr, par0=NULL, control.mcmc=NULL, pl
   sigma2.0 <- par0[p+1]
   Sigma0 <- sigma2.0 * corr0
   cat("\n Simulating the linear predictor given the initial parameter \n")
-  S.sim.res <- tryCatch(PrevMap::Laplace.sampling(mu=mu0, Sigma=Sigma0, y=y, units.m=m, 
+  S.sim.res <- tryCatch(PrevMap::Laplace.sampling(mu=mu0, Sigma=Sigma0, y=y, units.m=m,
                                                     control.mcmc=control.mcmc,
                                                     plot.correlogram=FALSE, messages=messages,
                                                     poisson.llik=TRUE), error=identity)
@@ -780,24 +780,24 @@ SDALGCPParaEst <- function(formula, data, corr, par0=NULL, control.mcmc=NULL, pl
     return(-0.5*(n*log(val$sigma2)+ ldetR0+
                    AAA/val$sigma2)+ llik)
   }
-  
+
   #it computes the density of S for each sample of S
   Num.Monte.Carlo.Log.Lik <- function(par) {
     beta <- par[1:p]
     val <- list()
     val$mu <- as.numeric(D%*%beta)
     val$sigma2 <- exp(par[p+1])
-    
+
     return(sapply(1:(dim(S.sim)[1]),function(i) Log.Joint.dens.S.Y(S.sim[i,],val)))
   }
   Den.Monte.Carlo.Log.Lik <- Num.Monte.Carlo.Log.Lik(c(beta0,log(sigma2.0)))
-  
-  
+
+
   ######################################
   func <- function(x, par0){
     cat("\n For phi = ", phi[x], "\n")
-    result <- Aggregated_poisson_log_MCML(y=y, D=D, m=m, corr= R[,,x], par0=par0, 
-                                          control.mcmc=control.mcmc, S.sim=S.sim, 
+    result <- Aggregated_poisson_log_MCML(y=y, D=D, m=m, corr= R[,,x], par0=par0,
+                                          control.mcmc=control.mcmc, S.sim=S.sim,
                                           Denominator = Den.Monte.Carlo.Log.Lik, messages=messages)
     result$estimate[p+1] <- exp(result$estimate[p+1])
     return(list(par=c(phi[x], result$value, as.numeric(result$estimate)), cov=result$covariance))
@@ -816,11 +816,12 @@ SDALGCPParaEst <- function(formula, data, corr, par0=NULL, control.mcmc=NULL, pl
   output <- as.data.frame(do.call('rbind', lapply(ress, function(x) x$par)))
   output2 <-  lapply(ress, function(x) x$cov)
   ########to get predictors names
-  mt <- attr(mf, "terms")
-  predictorsnames <- c("(intercept)", attr(mt, "term.labels"))
+  # mt <- attr(mf, "terms")
+  # predictorsnames <- c("(intercept)", attr(mt, "term.labels"))
+  predictorsnames <- colnames(D)
   ##########
   colnames(output) <- c('phi', 'value', predictorsnames, 'sigma2')
-  #i need to redo the col name when par0 is specified 
+  #i need to redo the col name when par0 is specified
   if (plot_profile) plot(output[,1], output[,2], type='l', ylab='loglik', xlab='phi', col="red")
   max.ind <- which.max(output[,'value'])
   max.res=output[max.ind,]
@@ -876,7 +877,7 @@ SDADiscretePred <- function(para_est, control.mcmc=NULL,
                             divisor=1, plot.correlogram=FALSE, messages=TRUE){
   out <- list()
   my_shp <- attr(para_est, 'my_shp')
-  beta <- para_est$beta_opt 
+  beta <- para_est$beta_opt
   mu0 <- para_est$mu
   sigma2 <- para_est$sigma2_opt*median(diag(para_est$Sigma_mat_opt))
   phi <-  para_est$phi_opt
@@ -884,7 +885,7 @@ SDADiscretePred <- function(para_est, control.mcmc=NULL,
   if (is.null(control.mcmc)) control.mcmc <- para_est$control.mcmc
   m <- para_est$m
   y <- para_est$y
-  S.sim.res <- PrevMap::Laplace.sampling(mu=mu0, Sigma=Sigma0, y=y, 
+  S.sim.res <- PrevMap::Laplace.sampling(mu=mu0, Sigma=Sigma0, y=y,
                                          units.m=m, control.mcmc = control.mcmc,
                                          plot.correlogram=plot.correlogram, messages=messages,
                                          poisson.llik=TRUE)
@@ -910,7 +911,7 @@ SDADiscretePred <- function(para_est, control.mcmc=NULL,
 ##' @title SDAContinuousPred function
 ##' @description This function performs spatial continuous prediction, fixing the model parameters at the Monte Carlo maximum likelihood estimates of a SDALGCP model.
 ##' @param para_est an object of class "SDALGCP" obtained as a result of a call to \code{\link{SDALGCPMCML}}.
-##' @param cellsize the size of the computational grid 
+##' @param cellsize the size of the computational grid
 ##' @param control.mcmc output from \code{\link{controlmcmcSDA}}, if not provided, it uses the values used for the parameter estimation
 ##' @param pred.loc optional, the dataframe of the predictive grid.
 ##' @param divisor optional, the value to use to convert the dimension of the polygon, default is 1 which implies no conversion
@@ -927,7 +928,7 @@ SDADiscretePred <- function(para_est, control.mcmc=NULL,
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @importFrom sp spsample coordinates
 ##' @importFrom Matrix solve chol
-##' @importFrom pdist pdist 
+##' @importFrom pdist pdist
 ##' @importFrom stats median
 ##' @keywords internal
 
@@ -937,7 +938,7 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
   my_shp <- attr(para_est, 'my_shp')
   weight <- attr(para_est, 'weighted')
   S.coord <- attr(para_est, 'S_coord')
-  beta <- para_est$beta_opt 
+  beta <- para_est$beta_opt
   mu0 <- para_est$mu
   sigma2 <- para_est$sigma2_opt*median(diag(para_est$Sigma_mat_opt))
   phi <-  para_est$phi_opt
@@ -945,7 +946,7 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
   if (is.null(control.mcmc)) control.mcmc <- para_est$control.mcmc
   m <- para_est$m
   y <- para_est$y
-  S.sim.res <- PrevMap::Laplace.sampling(mu=mu0, Sigma=Sigma0, y=y, 
+  S.sim.res <- PrevMap::Laplace.sampling(mu=mu0, Sigma=Sigma0, y=y,
                                          units.m=m, control.mcmc = control.mcmc,
                                          plot.correlogram=plot.correlogram, messages=messages,
                                          poisson.llik=TRUE)
@@ -991,7 +992,7 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
     }
     return(R)
   }
-  ##########  
+  ##########
   cov.matrix.x.A2=function(pred.loc, S.coord, phi){
     n.pred.loc <- nrow(pred.loc)
     n.distr <- length(S.coord)
@@ -1079,9 +1080,9 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
 ##' @param messages logical; if messages=TRUE, it prints the results objective function and the parameters at every phi iteration. Default is FALSE.
 ##' @details This function performs parameter estimation for a SDALGCP Model
 ##' \bold{Monte Carlo Maximum likelihood.}
-##' The Monte Carlo maximum likelihood method uses conditional simulation from the distribution of the random effect \eqn{T(x) = d(x)'\beta+S(x)} given the data \code{y}, in order to approximate the high-dimensional intractable integral given by the likelihood function. The resulting approximation of the likelihood is then maximized by a numerical optimization algorithm which uses analytic expression for computation of the gradient vector and Hessian matrix. The functions used for numerical optimization are \code{\link{nlminb}}. The first stage of estimation is generating locations inside the polygon, followed by precomputing the correlation matrices, then optimising the likelihood. 
-##' @return An object of class "PrevMap".
-##' The function \code{\link{summary.PrevMap}} is used to print a summary of the fitted model.
+##' The Monte Carlo maximum likelihood method uses conditional simulation from the distribution of the random effect \eqn{T(x) = d(x)'\beta+S(x)} given the data \code{y}, in order to approximate the high-dimensional intractable integral given by the likelihood function. The resulting approximation of the likelihood is then maximized by a numerical optimization algorithm which uses analytic expression for computation of the gradient vector and Hessian matrix. The functions used for numerical optimization are \code{\link{nlminb}}. The first stage of estimation is generating locations inside the polygon, followed by precomputing the correlation matrices, then optimising the likelihood.
+##' @return An object of class "SDALGCP".
+##' The function \code{\link{summary.SDALGCP}} is used to print a summary of the fitted model.
 ##' The object is a list with the following components:
 ##' @return \code{D}: matrix of covariates.
 ##' @return \code{y}: the count, response observations.
@@ -1103,10 +1104,10 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
 ##' data(PBCshp)
 ##' data <- as.data.frame(PBCshp@data)  #get the data
 ##' ### Write the formula of the model
-##' FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime + 
-##' Environment +  offset(log(pop)) 
+##' FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime +
+##' Environment +  offset(log(pop))
 ##' ### set the discretised phi
-##' phi <- seq(500, 1700, length.out = 20)   
+##' phi <- seq(500, 1700, length.out = 20)
 ##' #### get the initial parameter
 ##' model <- glm(formula=FORM, family="poisson", data=data)
 ##' beta.start <-coef(model)
@@ -1116,11 +1117,11 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
 ##' # setup the control arguments for the MCMC
 ##' n <- 545
 ##' h <- 1.65/(n^(1/6))
-##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000, 
+##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000,
 ##'                  thin= 8, h=h, c1.h = 0.01, c2.h = 1e-04)
 ##' ###Run the model
 ##' \donttest{
-##' my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1, 
+##' my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1,
 ##'                      weighted=FALSE,  plot=TRUE, par0=par0, control.mcmc=control.mcmc)
 ##' }
 ##' @author Olatunji O. Johnson \email{o.johnson@@lancaster.ac.uk}
@@ -1132,18 +1133,18 @@ SDAContinuousPred <- function(para_est, cellsize, control.mcmc=NULL, pred.loc=NU
 ##' @references Christensen, O. F. (2004). Monte Carlo maximum likelihood in model-based geostatistics. Journal of Computational and Graphical Statistics 13, 702-718.
 ##' @seealso \link{Aggregated_poisson_log_MCML}, \code{\link{Laplace.sampling}},  \link{summary.SDALGCP}
 ##' @export
-SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_shp=NULL, 
+SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_shp=NULL,
                         weighted=FALSE, par0=NULL, control.mcmc=NULL, plot=FALSE, plot_profile=TRUE, rho=NULL,
                         giveup=NULL, messages=FALSE){
   if(any(is.na(data))) stop("missing values are not accepted")
   if(class(formula)!="formula") stop("formula must be a 'formula' object that indicates the variables of the fitted model.")
   if(!is.null(control.mcmc) & length(control.mcmc) != 6) stop("please check the input of the controlmcmc argument")
   if(is.null(phi)){
-    phi <- seq(sqrt(min(sapply(1:length(my_shp), function(x) my_shp@polygons[[x]]@area))), 
+    phi <- seq(sqrt(min(sapply(1:length(my_shp), function(x) my_shp@polygons[[x]]@area))),
                min(apply(sp::bbox(my_shp), 1, diff))/10, length.out = 20)
   }
   #############create point
-  my_list <- SDALGCPpolygonpoints(my_shp=my_shp, delta=delta, method=1, pop_shp=pop_shp, 
+  my_list <- SDALGCPpolygonpoints(my_shp=my_shp, delta=delta, method=1, pop_shp=pop_shp,
                                   weighted=weighted, plot=plot, rho=rho, giveup = giveup)
   #############precompute matrix
   if(is.null(par0)){
@@ -1154,7 +1155,7 @@ SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_sh
   }
 
   #############estimate parameter
-  my_est <- SDALGCPParaEst(formula=formula, data=data, corr= my_preMatrix, par0=par0, 
+  my_est <- SDALGCPParaEst(formula=formula, data=data, corr= my_preMatrix, par0=par0,
                        control.mcmc=control.mcmc, plot_profile=plot_profile, messages=messages)
   my_est$call <- match.call()
   attr(my_est, 'SDALGCPMCML') <- TRUE
@@ -1163,10 +1164,10 @@ SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_sh
 }
 
 ##########################################
-##' @title Spatial continuous predictions of the relative risk using plug-in of MCML estimates
-##' @description This function performs spatial continuous prediction, fixing the model parameters at the Monte Carlo maximum likelihood estimates of a SDALGCP model.
+##' @title Spatial prediction using plug-in of MCML estimates
+##' @description This function performs spatial continuous and discrete prediction, fixing the model parameters at the Monte Carlo maximum likelihood estimates of a SDALGCP model.
 ##' @param para_est an object of class "SDALGCP" obtained as a result of a call to \code{\link{SDALGCPMCML}}.
-##' @param cellsize the size of the computational grid 
+##' @param cellsize the size of the computational grid
 ##' @param pred.loc optional, the dataframe of the predictive grid.
 ##' @param continuous logical; to choose which prediction to do perform, discrete or continuous. the default is continuous.
 ##' @param control.mcmc output from \code{\link{controlmcmcSDA}}, if not provided, it uses the values used for the parameter estimation
@@ -1174,7 +1175,7 @@ SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_sh
 ##' @param plot.correlogram logical; if plot.correlogram=TRUE the autocorrelation plot of the conditional simulations is displayed.
 ##' @param messages logical; if messages=TRUE then status messages are printed on the screen (or output device) while the function is running. Default is messages=TRUE.
 ##' @param parallel to parallelize some part of the function.
-##' @details The function perform prediction of the spatially discrete incidence and covariate adjusted relative risk, and spatially continuous relative risk. The discrete inference uses the Metropolis-Adjusted Langevin Hasting sampling from \code{\link{Laplace.sampling}}. And the continuous inference is typically change of support inference. 
+##' @details The function perform prediction of the spatially discrete incidence and covariate adjusted relative risk, and spatially continuous relative risk. The discrete inference uses the Metropolis-Adjusted Langevin Hasting sampling from \code{\link{Laplace.sampling}}. And the continuous inference is typically change of support inference.
 ##' @return pred.draw: the samples of the prediction
 ##' @return pred: the prediction of the relative risk
 ##' @return predSD: the standard error of the prediction
@@ -1184,10 +1185,10 @@ SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_sh
 ##' data(PBCshp)
 ##' data <- as.data.frame(PBCshp@data)  #get the data
 ##' ### Write the formula of the model
-##' FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime + 
-##' Environment +  offset(log(pop)) 
+##' FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime +
+##' Environment +  offset(log(pop))
 ##' ### set the discretised phi
-##' phi <- seq(500, 1700, length.out = 20)   
+##' phi <- seq(500, 1700, length.out = 20)
 ##' #### get the initial parameter
 ##' model <- glm(formula=FORM, family="poisson", data=data)
 ##' beta.start <-coef(model)
@@ -1197,11 +1198,11 @@ SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_sh
 ##' # setup the control arguments for the MCMC
 ##' n <- 545
 ##' h <- 1.65/(n^(1/6))
-##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000, 
+##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000,
 ##'                  thin= 8, h=h, c1.h = 0.01, c2.h = 1e-04)
 ##' ###Run the model
 ##' \donttest{
-##' my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1, 
+##' my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1,
 ##'                      weighted=FALSE,  plot=TRUE, par0=par0, control.mcmc=control.mcmc)
 ##' Con_pred <- SDALGCPPred(para_est=my_est,  cellsize=300, continuous=TRUE)
 ##' }
@@ -1212,7 +1213,7 @@ SDALGCPMCML <- function(formula, data, my_shp, delta, phi=NULL, method=1, pop_sh
 ##' @seealso \link{plot.Pred.SDALGCP}, \link{SDAContinuousPred}, \link{SDADiscretePred}, \link{plot_continuous}, \link{plot_discrete}
 ##' @importFrom sp spsample coordinates
 ##' @importFrom Matrix solve chol
-##' @importFrom pdist pdist 
+##' @importFrom pdist pdist
 ##' @importFrom stats median
 ##' @export
 SDALGCPPred <- function(para_est, cellsize, continuous=TRUE, control.mcmc=NULL, pred.loc=NULL,
@@ -1221,10 +1222,10 @@ SDALGCPPred <- function(para_est, cellsize, continuous=TRUE, control.mcmc=NULL, 
   if(class(para_est)!="SDALGCP") stop("para_est must be of class 'SDALGCP', that is be an output of SDALGCPMCML function")
   if(continuous && length(cellsize)==0) stop("if continuous is TRUE, cellsize must be provided")
   if (continuous){
-    Con_pred <- SDAContinuousPred(para_est=para_est,  cellsize=cellsize, pred.loc=pred.loc, parallel = parallel, divisor = divisor, 
+    Con_pred <- SDAContinuousPred(para_est=para_est,  cellsize=cellsize, pred.loc=pred.loc, parallel = parallel, divisor = divisor,
                                   plot.correlogram = plot.correlogram, messages = messages, control.mcmc = control.mcmc)
   }else{
-    Con_pred <- SDADiscretePred(para_est=para_est, control.mcmc = control.mcmc, divisor = divisor, 
+    Con_pred <- SDADiscretePred(para_est=para_est, control.mcmc = control.mcmc, divisor = divisor,
                                 plot.correlogram = plot.correlogram, messages = messages)
   }
   Con_pred$call <- match.call()
@@ -1304,21 +1305,27 @@ print.summary.SDALGCP <- function(x, ...){
 ##' @title plot_discrete
 ##' @description A generic function for mapping spatially discrete prediction for \code{\link{SDALGCPPred}} function in \link{SDALGCP} package. Not for general purposes
 ##' @param obj an object of class "Pred.SDALGCP" obtained as result of a call to \code{\link{SDALGCPPred}}
-##' @param type Character string: what type of plot to produce. Choices are "incidence" (=exp(mu+S)); "SEincidence" (standard error of incidence); "CovAdjRelRisk" (=exp(S)); or "SECovAdjRelRisk" (standard error of covariate adjusted relative risk);. 
+##' @param type Character string: what type of plot to produce. Choices are "incidence" (=exp(mu+S)); "SEincidence" (standard error of incidence); "CovAdjRelRisk" (=exp(S)); or "SECovAdjRelRisk" (standard error of covariate adjusted relative risk);.
+##' @param overlay optional; a logical operation to indicate either to add a base map.
 ##' @param ... further arguments passed to \code{\link{plot}}.
 ##' @seealso \code{\link{SDALGCPPred}}
 ##' @return The function does not return any value.
 ##' @author Olatunji O. Johnson \email{o.johnson@@lancaster.ac.uk}
 ##' @author Emanuele Giorgi \email{e.giorgi@@lancaster.ac.uk}
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
+##' @importFrom mapview mapview
 ##' @importFrom sp spplot
 ##' @keywords internal
-plot_discrete <- function(obj, type='incidence', ...){
+plot_discrete <- function(obj, type='incidence', overlay=FALSE, ...){
   obj$my_shp$incidence  <- obj$my_shp$pMean_RR
   obj$my_shp$SEincidence  <- obj$my_shp$pSD_RR
   obj$my_shp$CovAdjRelRisk  <- obj$my_shp$pMean_ARR
   obj$my_shp$SECovAdjRelRisk  <- obj$my_shp$pSD_ARR
-  sp::spplot(obj$my_shp, type, ...)
+  if(overlay==TRUE){
+    mapview::mapview(obj$my_shp, type, ...)
+  }else{
+    sp::spplot(obj$my_shp, type, ...)
+  }
 }
 
 ###################################################################
@@ -1327,6 +1334,7 @@ plot_discrete <- function(obj, type='incidence', ...){
 ##' @param obj an object of class "Pred.SDALGCP" obtained as result of a call to \code{\link{SDALGCPPred}}
 ##' @param type Character string: what type of plot to produce. Choices are "relrisk" (=exp(S)); "SErelrisk" (standard error of the relative risk).
 ##' @param bound the boundary of the predictive grid, not required if predictive grid is not supplied
+##' @param overlay optional; a logical operation to indicate either to add a base map.
 ##' @param ... further arguments passed to \code{\link{plot}}.
 ##' @seealso \code{\link{SDALGCPPred}}
 ##' @return The function does not return any value.
@@ -1334,29 +1342,54 @@ plot_discrete <- function(obj, type='incidence', ...){
 ##' @author Emanuele Giorgi \email{e.giorgi@@lancaster.ac.uk}
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @importFrom sp spplot
+##' @importFrom mapview mapview
 ##' @keywords internal
-plot_continuous <- function(obj, bound=NULL, type='relrisk', ...){
+plot_continuous <- function(obj, bound=NULL, type='relrisk', overlay=FALSE, ...){
   obj$relrisk  <- obj$pred
   obj$SErelrisk <- obj$predSD
   if (type=="relrisk"){
     dat <- data.frame(x=obj$pred.loc[,1], y=obj$pred.loc[,2], z = as.numeric(obj$pred))
     if (any(names(obj) == "bound"))  {
       r1  <- raster::mask(raster::rasterFromXYZ(dat), obj$bound)
-      sp::spplot(r1,  ..., sp.layout=obj$bound)
+      if(overlay==TRUE){
+        raster::crs(r1) <- obj$my_shp@proj4string
+        mapview::mapview(r1,  ...)
+      }else{
+        sp::spplot(r1,  ..., sp.layout=obj$bound)
+      }
+
     } else{
       if(is.null(bound)) stop("please supply the boundary of the region")
       r1  <- raster::mask(raster::rasterFromXYZ(dat), bound)
-      sp::spplot(r1,  ..., sp.layout=bound)
+      if(overlay==TRUE){
+        raster::crs(r1) <- obj$my_shp@proj4string
+        mapview::mapview(r1,  ...)
+      }else{
+        sp::spplot(r1,  ..., sp.layout=bound)
+      }
+
     }
   }else if (type=='SErelrisk'){
     dat <- data.frame(x=obj$pred.loc[,1], y=obj$pred.loc[,2], z = as.numeric(obj$predSD))
     if (any(names(obj) == "bound")){
       r1  <- raster::mask(raster::rasterFromXYZ(dat), obj$bound)
-      sp::spplot(r1, ..., sp.layout=obj$bound)
+      if(overlay==TRUE){
+        raster::crs(r1) <- obj$my_shp@proj4string
+        mapview::mapview(r1,  ...)
+      }else{
+        sp::spplot(r1, ..., sp.layout=obj$bound)
+      }
+
     } else{
       if(is.null(bound)) stop("please supply the boundary of the region")
       r1  <- raster::mask(raster::rasterFromXYZ(dat), bound)
-      sp::spplot(r1,  ..., sp.layout=bound)
+      if(overlay==TRUE){
+        raster::crs(r1) <- obj$my_shp@proj4string
+        mapview::mapview(r1,  ...)
+      }else{
+        sp::spplot(r1,  ..., sp.layout=bound)
+      }
+
     }
   }else if (length(type)==2){
     dat1 <- data.frame(x=obj$pred.loc[,1], y=obj$pred.loc[,2], z = as.numeric(obj$pred))
@@ -1365,17 +1398,29 @@ plot_continuous <- function(obj, bound=NULL, type='relrisk', ...){
       r1  <- raster::mask(raster::rasterFromXYZ(dat1), obj$bound)
       r2  <- raster::mask(raster::rasterFromXYZ(dat2), obj$bound)
       s <- raster::stack(r1, r2)
+      if(overlay==TRUE){
+        raster::crs(s) <- obj$my_shp@proj4string
+        mapview::mapview(s,  ...)
+      }else{
+        sp::spplot(s, colorkey=list(space="bottom"), ..., sp.layout=obj$bound)
+      }
       #use names.attr = c('Relative Risk', 'Standard Error of Relative Risk') to name the plot
-      sp::spplot(s, colorkey=list(space="bottom"), ..., sp.layout=obj$bound)
+
     } else{
       if(is.null(bound)) stop("please supply the boundary of the region")
       r1  <- raster::mask(raster::rasterFromXYZ(dat1), bound)
       r2  <- raster::mask(raster::rasterFromXYZ(dat2), bound)
       s <- raster::stack(r1, r2)
-      sp::spplot(s, colorkey=list(space="bottom"), ..., sp.layout=bound)
+      if(overlay==TRUE){
+        raster::crs(s) <- obj$my_shp@proj4string
+        mapview::mapview(s,  ...)
+      }else{
+        sp::spplot(s, colorkey=list(space="bottom"), ..., sp.layout=bound)
+      }
+
     }
   }else if (type=="incidence" | type=="CovAdjRelRisk"){
-    plot_discrete(obj=obj, type=type, ...)
+    plot_discrete(obj=obj, type=type, overlay=FALSE, ...)
   }
 }
 ################################
@@ -1394,7 +1439,7 @@ SDALGCPexceedance <- function(obj , thresholds, continuous=TRUE) {
     sim <- exp(obj$pred.draw)
     out <- sapply(thresholds, function(x) apply(sim, 2, function(z) mean(z > x)))
   }else{
-    sim <- exp(obj$S.draw)
+    sim <- exp(obj$S.draw-rep(t(obj$para_est$mu), nrow(obj$S.draw)))
     out <- sapply(thresholds, function(x) apply(sim, 2, function(z) mean(z > x)))
   }
   #colnames(out) <- thresholds
@@ -1407,28 +1452,46 @@ SDALGCPexceedance <- function(obj , thresholds, continuous=TRUE) {
 ##' @param thresholds either a vector  of numbers or a vector of single value.
 ##' @param bound optional; it gives the boundary of the region, only useful when the predictive location is supplied in \link{SDALGCPPred}.
 ##' @param continuous logical; TRUE for spatially continuous relative risk and FALSE for region specific relative risk. default is TRUE.
+##' @param overlay optional; a logical operation to indicate either to add a base map.
 ##' @param ... further arguments passed to \link{plot}.
 ##' @return The plot of the exceedance probability map
 ##' @seealso \link{SDALGCPPred}
+##' @importFrom sp spplot
+##' @importFrom mapview mapview
 ##' @author Olatunji O. Johnson \email{o.johnson@@lancaster.ac.uk}
 ##' @author Emanuele Giorgi \email{e.giorgi@@lancaster.ac.uk}
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @keywords internal
-plot_SDALGCPexceedance <- function(obj, thresholds, bound=NULL, continuous=TRUE, ...){
+plot_SDALGCPexceedance <- function(obj, thresholds, bound=NULL, continuous=TRUE, overlay=FALSE, ...){
   if (continuous){
     obj$prob <- SDALGCPexceedance(obj, thresholds=thresholds, continuous=TRUE)
     dat <- data.frame(x=obj$pred.loc[,1], y=obj$pred.loc[,2], z = as.numeric(obj$prob))
     if (any(names(obj) == "bound"))  {
       r1  <- raster::mask(raster::rasterFromXYZ(dat), obj$bound)
-      sp::spplot(r1,  ..., sp.layout=obj$bound)
+      if(overlay==TRUE){
+        mapview::mapview(r1,  ...)
+      }else{
+        sp::spplot(r1,  ..., sp.layout=obj$bound)
+      }
+
     } else{
       if(is.null(bound)) stop("please supply the boundary of the region")
       r1  <- raster::mask(raster::rasterFromXYZ(dat), bound)
-      sp::spplot(r1,  ..., sp.layout=bound)
+      if(overlay==TRUE){
+        mapview::mapview(r1,  ...)
+      }else{
+        sp::spplot(r1,  ..., sp.layout=bound)
+      }
+
     }
   }else{
     obj$my_shp$prob <- SDALGCPexceedance(obj, thresholds=thresholds, continuous=FALSE)
-    sp::spplot(obj$my_shp, "prob", ...)
+    if(overlay==TRUE){
+      mapview::mapview(r1,  ...)
+    }else{
+      sp::spplot(obj$my_shp, "prob", ...)
+    }
+
   }
 }
 
@@ -1440,6 +1503,7 @@ plot_SDALGCPexceedance <- function(obj, thresholds, bound=NULL, continuous=TRUE,
 ##' @param continuous logical; TRUE for spatially continuous relative risk and FALSE for region specific relative risk. default is TRUE
 ##' @param thresholds optional; (only used if you want to plot the exceedance probability) either a vector  of numbers or a vector of single value.
 ##' @param bound optional; it gives the boundary of the region, only useful when the predictive location is supplied in \link{SDALGCPPred}
+##' @param overlay optional; a logical operation to indicate either to add a base map.
 ##' @param ... further arguments passed to \link{plot}.
 ##' @details This function plots the inference from \code{\link{SDALGCPPred}} function. It plots for region-specific inference; incidence and covariate adjusted relative risk while for spatially continuous inference it plots the relative risk. It can as well plot the exceedance probability for spatially discrete and continuous inference.
 ##' @seealso \link{SDALGCPPred}, \link{plot_continuous}, \link{plot_discrete}, \link{plot_SDALGCPexceedance}, \link{SDALGCPexceedance}
@@ -1450,10 +1514,10 @@ plot_SDALGCPexceedance <- function(obj, thresholds, bound=NULL, continuous=TRUE,
 ##' data(PBCshp)
 ##' data <- as.data.frame(PBCshp@data)  #get the data
 ##' ### Write the formula of the model
-##' FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime + 
-##' Environment +  offset(log(pop)) 
+##' FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime +
+##' Environment +  offset(log(pop))
 ##' ### set the discretised phi
-##' phi <- seq(500, 1700, length.out = 20)   
+##' phi <- seq(500, 1700, length.out = 20)
 ##' #### get the initial parameter
 ##' model <- glm(formula=FORM, family="poisson", data=data)
 ##' beta.start <-coef(model)
@@ -1463,11 +1527,11 @@ plot_SDALGCPexceedance <- function(obj, thresholds, bound=NULL, continuous=TRUE,
 ##' # setup the control arguments for the MCMC
 ##' n <- 545
 ##' h <- 1.65/(n^(1/6))
-##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000, 
+##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000,
 ##'                  thin= 8, h=h, c1.h = 0.01, c2.h = 1e-04)
 ##' ###Run the model
 ##' \donttest{
-##' my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1, 
+##' my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1,
 ##'                      weighted=FALSE,  plot=TRUE, par0=NULL, control.mcmc=control.mcmc)
 ##' Con_pred <- SDALGCPPred(para_est=my_est,  cellsize=300, continuous=TRUE)
 ##' #to plot the spatially continuous relative risk
@@ -1483,22 +1547,20 @@ plot_SDALGCPexceedance <- function(obj, thresholds, bound=NULL, continuous=TRUE,
 ##' @author Emanuele Giorgi \email{e.giorgi@@lancaster.ac.uk}
 ##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
 ##' @export
-plot.Pred.SDALGCP <- function(x,  type='relrisk', continuous=NULL, thresholds=NULL, bound=NULL, ...){
-  if(is.null(continuous)){
-    continuous <- attr(x, 'continuous')
-  }
+plot.Pred.SDALGCP <- function(x,  type='relrisk', continuous=NULL, thresholds=NULL, bound=NULL, overlay=FALSE, ...){
+  if(is.null(continuous)) continuous <- attr(x, 'continuous')
   if(continuous){
     if(is.null(thresholds)){
-      plot_continuous(obj=x, bound=bound, type=type, ...)
+      plot_continuous(obj=x, bound=bound, type=type, overlay=overlay, ...)
     } else {
-      plot_SDALGCPexceedance(obj=x , thresholds=thresholds, bound=bound, continuous=continuous, ...)
+      plot_SDALGCPexceedance(obj=x , thresholds=thresholds, bound=bound, continuous=continuous, overlay=overlay, ...)
     }
   }else{
     if (is.null(thresholds)){
       if (type=='relrisk') stop("Since you have made a spatially discrete inference, please set type to be one of these four options, choices are 'incidence' (=exp(mu+S)); 'SEincidence' (standard error of incidence); 'CovAdjRelRisk' (=exp(S)); or 'SECovAdjRelRisk' (standard error of covariate adjusted relative risk)")
-      plot_discrete(obj=x, type=type, ...)
+      plot_discrete(obj=x, type=type, overlay=overlay, ...)
     } else{
-      plot_SDALGCPexceedance(obj=x , thresholds=thresholds, bound=bound, continuous=continuous, ...)
+      plot_SDALGCPexceedance(obj=x , thresholds=thresholds, bound=bound, continuous=continuous, overlay=overlay, ...)
     }
   }
 }
@@ -1544,12 +1606,12 @@ confint.SDALGCP <- function(object, parm, level = 0.95, dp=3, ...){
 ##' @param h tuning parameter of the proposal distribution used in the Langevin-Hastings MCMC algorithm (see Laplace.sampling); default is h=NULL and then set internally as 1.65/n(1/6), where n is the dimension of the random effect.
 ##' @param c1.h value of c1 used in the adaptive scheme for h; default is c1.h=0.01. See also 'Details' in PrevMap package
 ##' @param c2.h value of c2 used in the adaptive scheme for h; default is c2.h=1e-04. See also 'Details' in PrevMap package
-##' @details To be used in SDA
+##' @details To be used as one of the arguments of \code{\link{SDALGCPMCML}}
 ##' @return A list with processed arguments to be passed to the main function.
 ##' @examples
 ##' n <- 545
 ##' h <- 1.65/(n^(1/6))
-##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000, 
+##' control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000,
 ##' thin= 8, h=h, c1.h = 0.01, c2.h = 1e-04)
 ##' str(control.mcmc)
 ##' @author Olatunji O. Johnson \email{o.johnson@@lancaster.ac.uk}
@@ -1558,7 +1620,7 @@ confint.SDALGCP <- function(object, parm, level = 0.95, dp=3, ...){
 ##' @importFrom pdist pdist
 ##' @seealso \link[PrevMap]{control.mcmc.MCML}
 ##' @export
-##' 
+##'
 
 controlmcmcSDA <- function(n.sim, burnin, thin, h, c1.h, c2.h){
   if(length(h)==0) h <- Inf #set it to infinity
@@ -1570,4 +1632,20 @@ controlmcmcSDA <- function(n.sim, burnin, thin, h, c1.h, c2.h){
   if(c2.h < 0 | c2.h > 1) stop("c2.h must take a value between 0 and 1.")
   control.mcmc <- list(n.sim = n.sim, burnin = burnin, thin= thin, h=h, c1.h = c1.h, c2.h = c2.h)
   return(control.mcmc)
+}
+
+##' @title plot profile likelihood of phi
+##' @description This function plots the profile likelihood of phi
+##' @param obj the output of \code{\link{SDALGCPMCML}} of class "SDALGCP"
+##' @details To be used to view the value of the likelihood versus the scale parameter phi
+##' @return A plot
+##' @author Olatunji O. Johnson \email{o.johnson@@lancaster.ac.uk}
+##' @author Emanuele Giorgi \email{e.giorgi@@lancaster.ac.uk}
+##' @author Peter J. Diggle \email{p.diggle@@lancaster.ac.uk}
+##' @export
+##'
+SDAProfilePhi <- function(obj){
+  if(class(obj) != "SDALGCP") stop("please check the input, it must be an output of SDALGCPMCML function of class SDALGCP")
+  output <- obj$all_para
+  plot(output[,1], output[,2], type='l', ylab='loglik', xlab='phi', col="red")
 }

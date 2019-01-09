@@ -4,8 +4,8 @@
 \alias{plot_SDALGCPexceedance}
 \title{plot_SDALGCPexceedance}
 \usage{
-plot_SDALGCPexceedance(obj, thresholds, bound = NULL, continuous = TRUE,
-  ...)
+plot_SDALGCPexceedance(obj, thresholds, bound = NULL,
+  continuous = TRUE, overlay = FALSE, ...)
 }
 \arguments{
 \item{obj}{an object of class "Pred.SDALGCP" obtained as result of a call to \code{\link{SDALGCPPred}}.}
@@ -15,6 +15,8 @@ plot_SDALGCPexceedance(obj, thresholds, bound = NULL, continuous = TRUE,
 \item{bound}{optional; it gives the boundary of the region, only useful when the predictive location is supplied in \link{SDALGCPPred}.}
 
 \item{continuous}{logical; TRUE for spatially continuous relative risk and FALSE for region specific relative risk. default is TRUE.}
+
+\item{overlay}{optional; a logical operation to indicate either to add a base map.}
 
 \item{...}{further arguments passed to \link{plot}.}
 }

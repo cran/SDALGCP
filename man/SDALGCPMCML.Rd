@@ -5,9 +5,9 @@
 \title{Parameter estimation for SDA-LGCP Using Monte Carlo Maximum likelihood}
 \usage{
 SDALGCPMCML(formula, data, my_shp, delta, phi = NULL, method = 1,
-  pop_shp = NULL, weighted = FALSE, par0 = NULL, control.mcmc = NULL,
-  plot = FALSE, plot_profile = TRUE, rho = NULL, giveup = NULL,
-  messages = FALSE)
+  pop_shp = NULL, weighted = FALSE, par0 = NULL,
+  control.mcmc = NULL, plot = FALSE, plot_profile = TRUE,
+  rho = NULL, giveup = NULL, messages = FALSE)
 }
 \arguments{
 \item{formula}{an object of class \code{\link{formula}} (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
@@ -41,8 +41,8 @@ SDALGCPMCML(formula, data, my_shp, delta, phi = NULL, method = 1,
 \item{messages}{logical; if messages=TRUE, it prints the results objective function and the parameters at every phi iteration. Default is FALSE.}
 }
 \value{
-An object of class "PrevMap".
-The function \code{\link{summary.PrevMap}} is used to print a summary of the fitted model.
+An object of class "SDALGCP".
+The function \code{\link{summary.SDALGCP}} is used to print a summary of the fitted model.
 The object is a list with the following components:
 
 \code{D}: matrix of covariates.
@@ -88,10 +88,10 @@ The Monte Carlo maximum likelihood method uses conditional simulation from the d
 data(PBCshp)
 data <- as.data.frame(PBCshp@data)  #get the data
 ### Write the formula of the model
-FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime + 
-Environment +  offset(log(pop)) 
+FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime +
+Environment +  offset(log(pop))
 ### set the discretised phi
-phi <- seq(500, 1700, length.out = 20)   
+phi <- seq(500, 1700, length.out = 20)
 #### get the initial parameter
 model <- glm(formula=FORM, family="poisson", data=data)
 beta.start <-coef(model)
@@ -101,11 +101,11 @@ par0 <- c(beta.start, sigma2.start, phi.start)
 # setup the control arguments for the MCMC
 n <- 545
 h <- 1.65/(n^(1/6))
-control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000, 
+control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000,
                  thin= 8, h=h, c1.h = 0.01, c2.h = 1e-04)
 ###Run the model
 \donttest{
-my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1, 
+my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1,
                      weighted=FALSE,  plot=TRUE, par0=par0, control.mcmc=control.mcmc)
 }
 }

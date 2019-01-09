@@ -12,7 +12,7 @@
 
 <meta name="author" content="Olatunji Johnson" />
 
-<meta name="date" content="2018-08-13" />
+<meta name="date" content="2019-01-09" />
 
 <title>A Spatially Discrete Approximation to Log-Gaussian Cox Processes for Modelling Aggregated Disease Count Data</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">A Spatially Discrete Approximation to Log-Gaussian Cox Processes for Modelling Aggregated Disease Count Data</h1>
 <h4 class="author"><em>Olatunji Johnson</em></h4>
-<h4 class="date"><em>2018-08-13</em></h4>
+<h4 class="date"><em>2019-01-09</em></h4>
 
 
 <div id="TOC">
@@ -79,9 +79,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#model">Model</a></li>
 </ul></li>
 <li><a href="#tutorial">Tutorial</a><ul>
-<li><a href="#sdalgcp-i-population-weighted">SDALGCP I (population weighted)</a></li>
+<li><a href="#sdalgcp-i-population-weighted-application-to-primary-biliary-cirrhosis-in-newcastle-upon-tyne-uk">SDALGCP I (population weighted): application to primary biliary cirrhosis in Newcastle-upon-tyne, UK</a></li>
 <li><a href="#sdalgcp-ii-unweighted">SDALGCP II (Unweighted)</a></li>
 </ul></li>
+<li><a href="#spatio-temporal-sdalgcp-application-to-lung-cancer-mortality-in-ohio.">Spatio-temporal SDALGCP: application to Lung cancer mortality in Ohio.</a></li>
 <li><a href="#discussion">Discussion</a></li>
 </ul>
 </div>
@@ -97,6 +98,7 @@ Our goal is to analyse of diease count data, more specifically when disease case
 \mathcal{D} = \left\{(y_{i}, d_{i}, \mathcal{R}_{i}):  i=1,\ldots,n\right\}
 \end{eqnarray}\]</span>
 <p>where <span class="math inline">\(y_{i}\)</span> and <span class="math inline">\(d_{i}\)</span> are the number of reported cases and a vector of explanatory variables associated with <span class="math inline">\(i\)</span>-th region <span class="math inline">\(\mathcal{R}_{i}\)</span>, respectively. Hence, we model <span class="math inline">\(y_{i}\)</span> conditional on the stochastic process <span class="math inline">\(S(X)\)</span> as poission distribution with mean <span class="math inline">\(\lambda_i= m_{i} \exp\{d_{i}\beta^* + S_{i}^*\}\)</span>. Then we assume that <span class="math inline">\(S^* \sim MVN(0, \Sigma)\)</span>, where <span class="math display">\[\Sigma_{ij} = \sigma^2 \int_{\mathcal{R}_{i}} \int_{\mathcal{R}_{j}} w_i(x) w_j(x') \: \rho(\|x-x'\|; \phi) \:  dx \: dx'\]</span>, where <span class="math inline">\(w(x)\)</span> is population density weight. There are two classes of models in this package; one is when we approximate <span class="math display">\[S_i^* = \int_{\mathcal{R}_{i}} w_i(x) S^*(x) \:  dx \]</span> and the other is <span class="math display">\[S_i^* = \frac{1}{\mathcal{R}_{i}} \int_{\mathcal{R}_{i}} S^*(x) \:  dx. \]</span> ## Inference We used Monte Carlo Maximum Likelihood for inference. The likelihood function for this class of model is usually intractible, hence we approximate the likelihood function as <span class="math display">\[\frac{1}{N}~ \sum_{j=1}^N~\frac{f(\eta_{(j)}; \psi)}{f(\eta_{(j)}; \psi_0)}.\]</span>, where <span class="math inline">\(\psi\)</span> is the vector of the parameters.</p>
+<p>This vignette walk you through how to analyse spatial and spatio-temporal dataset using  package. Two illustrative examples were provided; application to primary biliary cirrhosis in Newcastle-upon-tyne, UK (static spatial case) and Lung cancer mortality in Ohio, USA (spatio-temporal case).</p>
 </div>
 </div>
 <div id="tutorial" class="section level1">
@@ -107,17 +109,17 @@ Our goal is to analyse of diease count data, more specifically when disease case
 <p>load the data</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;PBCshp&quot;</span>)</code></pre></div>
 <p>extract the dataframe containing data from the object loaded</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(PBCshp@data)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(PBCshp<span class="op">@</span>data)</code></pre></div>
 <p>load the population density raster</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;pop_den&quot;</span>)</code></pre></div>
 <p>set any population density that is NA to zero</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pop_den[<span class="kw">is.na</span>(pop_den[])] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
 <p>write a formula of the model you want to fit</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FORM &lt;-<span class="st"> </span>X ~<span class="st"> </span>propmale +<span class="st"> </span>Income +<span class="st"> </span>Employment +<span class="st"> </span>Education +<span class="st"> </span>Barriers +<span class="st"> </span>Crime +<span class="st"> </span>
-<span class="st">  </span>Environment +<span class="st">  </span><span class="kw">offset</span>(<span class="kw">log</span>(pop))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FORM &lt;-<span class="st"> </span>X <span class="op">~</span><span class="st"> </span>propmale <span class="op">+</span><span class="st"> </span>Income <span class="op">+</span><span class="st"> </span>Employment <span class="op">+</span><span class="st"> </span>Education <span class="op">+</span><span class="st"> </span>Barriers <span class="op">+</span><span class="st"> </span>Crime <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span>Environment <span class="op">+</span><span class="st">  </span><span class="kw">offset</span>(<span class="kw">log</span>(pop))</code></pre></div>
 <p>Now to proceed to fitting the model, note that there two types of model that can be fitted. One is when approximate the intensity of LGCP by taking the population weighted average and the other is by taking the simple average. We shall consider both cases in this tutorial, starting with population weighted since we have population density on a raster grid of 300m by 300m.</p>
-<div id="sdalgcp-i-population-weighted" class="section level2">
-<h2>SDALGCP I (population weighted)</h2>
+<div id="sdalgcp-i-population-weighted-application-to-primary-biliary-cirrhosis-in-newcastle-upon-tyne-uk" class="section level2">
+<h2>SDALGCP I (population weighted): application to primary biliary cirrhosis in Newcastle-upon-tyne, UK</h2>
 <p>Here we estimate the parameters of the model</p>
 <p>Discretise the value of scale parameter <span class="math inline">\(\phi\)</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phi &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">500</span>, <span class="dv">1700</span>, <span class="dt">length.out =</span> <span class="dv">20</span>)</code></pre></div>
@@ -144,8 +146,8 @@ Our goal is to analyse of diease count data, more specifically when disease case
 <span class="kw">plot</span>(Dis_pred, <span class="dt">type=</span><span class="st">&quot;CovAdjRelRisk&quot;</span>, <span class="dt">continuous =</span> <span class="ot">FALSE</span>)
 <span class="co">#and its standard error</span>
 <span class="kw">plot</span>(Dis_pred, <span class="dt">type=</span><span class="st">&quot;SECovAdjRelRisk&quot;</span>, <span class="dt">continuous =</span> <span class="ot">FALSE</span>)
-<span class="co">#to map the exceedance probability that the incidence is greter than a particular threshold</span>
-<span class="kw">plot</span>(Dis_pred, <span class="dt">type=</span><span class="st">&quot;incidence&quot;</span>, <span class="dt">continuous =</span> <span class="ot">FALSE</span>, <span class="dt">thresholds=</span><span class="fl">0.0015</span>)</code></pre></div>
+<span class="co">#to map the exceedance probability that the covariate-adjusted relative risk is greter than a particular threshold</span>
+<span class="kw">plot</span>(Dis_pred, <span class="dt">type=</span><span class="st">&quot;CovAdjRelRisk&quot;</span>, <span class="dt">continuous =</span> <span class="ot">FALSE</span>, <span class="dt">thresholds=</span><span class="fl">3.0</span>)</code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>If interested in spatially continuous prediction of the covariate adjusted relative risk. This is achieved by simply setting  in the  function.</li>
 </ol>
@@ -156,7 +158,7 @@ Our goal is to analyse of diease count data, more specifically when disease case
 <span class="co">#and its standard error</span>
 <span class="kw">plot</span>(Con_pred, <span class="dt">type=</span><span class="st">&quot;SErelrisk&quot;</span>)
 <span class="co">#to map the exceedance probability that the relative risk is greter than a particular threshold</span>
-<span class="kw">plot</span>(Con_pred, <span class="dt">type=</span><span class="st">&quot;relrisk&quot;</span>, <span class="dt">thresholds=</span><span class="dv">2</span>)</code></pre></div>
+<span class="kw">plot</span>(Con_pred, <span class="dt">type=</span><span class="st">&quot;relrisk&quot;</span>, <span class="dt">thresholds=</span><span class="fl">1.5</span>)</code></pre></div>
 </div>
 <div id="sdalgcp-ii-unweighted" class="section level2">
 <h2>SDALGCP II (Unweighted)</h2>
@@ -164,6 +166,49 @@ Our goal is to analyse of diease count data, more specifically when disease case
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_est &lt;-<span class="st"> </span><span class="kw">SDALGCPMCML</span>(<span class="dt">data=</span>data, <span class="dt">formula=</span>FORM, <span class="dt">my_shp=</span>PBCshp, <span class="dt">delta=</span><span class="dv">200</span>, <span class="dt">phi=</span>phi, <span class="dt">method=</span><span class="dv">1</span>, 
                       <span class="dt">weighted=</span><span class="ot">FALSE</span>,  <span class="dt">plot=</span><span class="ot">FALSE</span>, <span class="dt">par0=</span><span class="ot">NULL</span>, <span class="dt">control.mcmc=</span><span class="ot">NULL</span>, <span class="dt">messages =</span> <span class="ot">TRUE</span>, <span class="dt">plot_profile =</span> <span class="ot">TRUE</span>)</code></pre></div>
 </div>
+</div>
+<div id="spatio-temporal-sdalgcp-application-to-lung-cancer-mortality-in-ohio." class="section level1">
+<h1>Spatio-temporal SDALGCP: application to Lung cancer mortality in Ohio.</h1>
+<p>Download the dataset</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(rgdal)
+<span class="kw">require</span>(sp)
+<span class="kw">require</span>(spacetime)
+ohiorespMort &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/olatunjijohnson/dataset/master/OhioRespMort.csv&quot;</span>)
+<span class="kw">download.file</span>(<span class="st">&quot;https://github.com/olatunjijohnson/dataset/raw/master/ohio_shapefile.zip&quot;</span>, <span class="st">&quot;ohio_shapefile.zip&quot;</span>)
+<span class="kw">unzip</span>(<span class="st">&quot;ohio_shapefile.zip&quot;</span>)
+ohio_shp &lt;-<span class="st"> </span>rgdal<span class="op">::</span><span class="kw">readOGR</span>(<span class="st">&quot;ohio_shapefile/&quot;</span>,<span class="st">&quot;tl_2010_39_county00&quot;</span>)
+ohio_shp &lt;-<span class="st"> </span>sp<span class="op">::</span><span class="kw">spTransform</span>(ohio_shp, sp<span class="op">::</span><span class="kw">CRS</span>(<span class="st">&quot;+init=epsg:32617&quot;</span>))</code></pre></div>
+<p>create a spacetime object as an input of the spatio-temporal SDALGCP model</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw">length</span>(ohio_shp)
+TT &lt;-<span class="st"> </span><span class="dv">21</span>
+Y &lt;-<span class="st"> </span>ohiorespMort<span class="op">$</span>y
+X &lt;-<span class="st"> </span>ohiorespMort<span class="op">$</span>year
+pop &lt;-<span class="st"> </span>ohiorespMort<span class="op">$</span>n
+E &lt;-<span class="st"> </span>ohiorespMort<span class="op">$</span>E
+data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Y=</span>Y, <span class="dt">X=</span>X, <span class="dt">pop=</span>pop, <span class="dt">E=</span>E)
+formula &lt;-<span class="st"> </span>Y <span class="op">~</span><span class="st">  </span>X <span class="op">+</span><span class="st"> </span><span class="kw">offset</span>(<span class="kw">log</span>(E))
+phi &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">300</span>, <span class="dt">length.out =</span> <span class="dv">10</span>)
+control.mcmc &lt;-<span class="st"> </span><span class="kw">controlmcmcSDA</span>(<span class="dt">n.sim=</span><span class="dv">10000</span>, <span class="dt">burnin=</span><span class="dv">2000</span>, <span class="dt">thin=</span><span class="dv">80</span>, <span class="dt">h=</span><span class="fl">1.65</span><span class="op">/</span>((m<span class="op">*</span>TT)<span class="op">^</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">6</span>)), <span class="dt">c1.h=</span><span class="fl">0.01</span>, <span class="dt">c2.h=</span><span class="fl">0.0001</span>)
+time &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(<span class="dv">1968</span><span class="op">:</span><span class="dv">1988</span>, <span class="st">&quot;-01-01&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;&quot;</span>)
+st_data &lt;-<span class="st"> </span>spacetime<span class="op">::</span><span class="kw">STFDF</span>(<span class="dt">sp =</span> ohio_shp, <span class="dt">time =</span> time, <span class="dt">data =</span> data)</code></pre></div>
+<p>Plot the spatio-temporal count data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spacetime<span class="op">::</span><span class="kw">stplot</span>(st_data[,,<span class="st">&quot;Y&quot;</span>])</code></pre></div>
+<p>Parameter estimation</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.fit &lt;-<span class="st"> </span><span class="kw">SDALGCPMCML_ST</span>(<span class="dt">formula=</span>formula, <span class="dt">st_data =</span> st_data,  <span class="dt">delta=</span><span class="dv">800</span>, 
+                            <span class="dt">phi=</span>phi, <span class="dt">method=</span><span class="dv">2</span>, <span class="dt">pop_shp=</span><span class="ot">NULL</span>,  <span class="dt">kappa=</span><span class="fl">0.5</span>,
+                            <span class="dt">weighted=</span><span class="ot">FALSE</span>, <span class="dt">par0=</span><span class="ot">NULL</span>, <span class="dt">control.mcmc=</span>control.mcmc, 
+                            <span class="dt">plot=</span><span class="ot">TRUE</span>, <span class="dt">plot_profile=</span><span class="ot">TRUE</span>, <span class="dt">rho=</span><span class="ot">NULL</span>,
+                            <span class="dt">giveup=</span><span class="dv">50</span>, <span class="dt">messages=</span><span class="ot">TRUE</span>)
+<span class="kw">summary</span>(model.fit)</code></pre></div>
+<p>Area-level of the spatio-temporal prediction</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dis_pred &lt;-<span class="st"> </span><span class="kw">SDALGCPPred_ST</span>(<span class="dt">para_est =</span> model.fit, <span class="dt">continuous =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>Ploting the area-level incidence and the covariate adjusted relative risk</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(dis_pred, <span class="dt">type=</span><span class="st">&quot;CovAdjRelRisk&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Relative Risk&quot;</span>, <span class="dt">continuous=</span><span class="ot">FALSE</span>)
+<span class="kw">plot</span>(dis_pred,  <span class="dt">type=</span><span class="st">&quot;incidence&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Incidence&quot;</span>, <span class="dt">continuous=</span><span class="ot">FALSE</span>)</code></pre></div>
+<p>Spatially continuous prediction of the covariate adjusted relative risk</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">con_pred &lt;-<span class="st"> </span><span class="kw">SDALGCPPred_ST</span>(<span class="dt">para_est =</span> model.fit, <span class="dt">cellsize =</span> <span class="dv">2500</span>, <span class="dt">continuous=</span><span class="ot">TRUE</span>, <span class="dt">n.window =</span> <span class="dv">1</span>)</code></pre></div>
+<p>Ploting the spatially continuous covariate-adjusted relative risk</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(con_pred, <span class="dt">type=</span><span class="st">&quot;relrisk&quot;</span>, <span class="dt">continuous=</span><span class="ot">TRUE</span>)</code></pre></div>
 </div>
 <div id="discussion" class="section level1">
 <h1>Discussion</h1>

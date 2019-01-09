@@ -4,12 +4,14 @@
 \alias{plot_discrete}
 \title{plot_discrete}
 \usage{
-plot_discrete(obj, type = "incidence", ...)
+plot_discrete(obj, type = "incidence", overlay = FALSE, ...)
 }
 \arguments{
 \item{obj}{an object of class "Pred.SDALGCP" obtained as result of a call to \code{\link{SDALGCPPred}}}
 
 \item{type}{Character string: what type of plot to produce. Choices are "incidence" (=exp(mu+S)); "SEincidence" (standard error of incidence); "CovAdjRelRisk" (=exp(S)); or "SECovAdjRelRisk" (standard error of covariate adjusted relative risk);.}
+
+\item{overlay}{optional; a logical operation to indicate either to add a base map.}
 
 \item{...}{further arguments passed to \code{\link{plot}}.}
 }

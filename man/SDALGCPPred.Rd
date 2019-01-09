@@ -2,11 +2,11 @@
 % Please edit documentation in R/dm_functions.R
 \name{SDALGCPPred}
 \alias{SDALGCPPred}
-\title{Spatial continuous predictions of the relative risk using plug-in of MCML estimates}
+\title{Spatial prediction using plug-in of MCML estimates}
 \usage{
 SDALGCPPred(para_est, cellsize, continuous = TRUE, control.mcmc = NULL,
-  pred.loc = NULL, divisor = 1, plot.correlogram = F, messages = TRUE,
-  parallel = FALSE)
+  pred.loc = NULL, divisor = 1, plot.correlogram = F,
+  messages = TRUE, parallel = FALSE)
 }
 \arguments{
 \item{para_est}{an object of class "SDALGCP" obtained as a result of a call to \code{\link{SDALGCPMCML}}.}
@@ -37,7 +37,7 @@ predSD: the standard error of the prediction
 Pred.loc: The coordinates of the predictive locations
 }
 \description{
-This function performs spatial continuous prediction, fixing the model parameters at the Monte Carlo maximum likelihood estimates of a SDALGCP model.
+This function performs spatial continuous and discrete prediction, fixing the model parameters at the Monte Carlo maximum likelihood estimates of a SDALGCP model.
 }
 \details{
 The function perform prediction of the spatially discrete incidence and covariate adjusted relative risk, and spatially continuous relative risk. The discrete inference uses the Metropolis-Adjusted Langevin Hasting sampling from \code{\link{Laplace.sampling}}. And the continuous inference is typically change of support inference.
@@ -47,10 +47,10 @@ The function perform prediction of the spatially discrete incidence and covariat
 data(PBCshp)
 data <- as.data.frame(PBCshp@data)  #get the data
 ### Write the formula of the model
-FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime + 
-Environment +  offset(log(pop)) 
+FORM <- X ~ propmale + Income + Employment + Education + Barriers + Crime +
+Environment +  offset(log(pop))
 ### set the discretised phi
-phi <- seq(500, 1700, length.out = 20)   
+phi <- seq(500, 1700, length.out = 20)
 #### get the initial parameter
 model <- glm(formula=FORM, family="poisson", data=data)
 beta.start <-coef(model)
@@ -60,11 +60,11 @@ par0 <- c(beta.start, sigma2.start, phi.start)
 # setup the control arguments for the MCMC
 n <- 545
 h <- 1.65/(n^(1/6))
-control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000, 
+control.mcmc <- controlmcmcSDA(n.sim = 10000, burnin = 2000,
                  thin= 8, h=h, c1.h = 0.01, c2.h = 1e-04)
 ###Run the model
 \donttest{
-my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1, 
+my_est <- SDALGCPMCML(formula=FORM, data=data, my_shp=PBCshp, delta=100, phi=phi, method=1,
                      weighted=FALSE,  plot=TRUE, par0=par0, control.mcmc=control.mcmc)
 Con_pred <- SDALGCPPred(para_est=my_est,  cellsize=300, continuous=TRUE)
 }

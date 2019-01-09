@@ -4,7 +4,8 @@
 \alias{plot_continuous}
 \title{plot_continuous}
 \usage{
-plot_continuous(obj, bound = NULL, type = "relrisk", ...)
+plot_continuous(obj, bound = NULL, type = "relrisk", overlay = FALSE,
+  ...)
 }
 \arguments{
 \item{obj}{an object of class "Pred.SDALGCP" obtained as result of a call to \code{\link{SDALGCPPred}}}
@@ -12,6 +13,8 @@ plot_continuous(obj, bound = NULL, type = "relrisk", ...)
 \item{bound}{the boundary of the predictive grid, not required if predictive grid is not supplied}
 
 \item{type}{Character string: what type of plot to produce. Choices are "relrisk" (=exp(S)); "SErelrisk" (standard error of the relative risk).}
+
+\item{overlay}{optional; a logical operation to indicate either to add a base map.}
 
 \item{...}{further arguments passed to \code{\link{plot}}.}
 }
